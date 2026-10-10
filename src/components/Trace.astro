@@ -1,0 +1,38 @@
+---
+/**
+ * The site's signature element: an EEG-style trace drawn once on page load.
+ * Generated deterministically at build time, so it ships as static SVG with no JS.
+ */
+interface Props { height?: number; seed?: number; label?: string }
+const { height = 140, seed = 3, label } = Astro.props;
+
+const W = 1200, H = height, mid = H / 2;
+let s = seed;
+const rand = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+const pts: string[] = [];
+for (let x = 0; x <= W; x += 4) {
+  const t = x / W;
+  let y = Math.sin(x / 9) * 9 + Math.sin(x / 23 + 1) * 7 + (rand() - 0.5) * 8; // alpha-like rhythm + noise
+  if (t > 0.58 && t < 0.62) y += Math.sin((t - 0.58) * Math.PI / 0.04) * -H * 0.38; // one spike-and-wave complex
+  if (t >= 0.62 && t < 0.68) y += Math.sin((t - 0.62) * Math.PI / 0.06) * H * 0.16;
+  pts.push(`${x},${(mid + y).toFixed(1)}`);
+}
+const d = `M${pts.join(' L')}`;
+---
+<figure class="trace" aria-hidden={label ? undefined : 'true'}>
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role={label ? 'img' : undefined} aria-label={label}>
+    <path d={d} pathLength="1" />
+  </svg>
+</figure>
+<style>
+  .trace { margin: 0; height: var(--trace-h, 140px); background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px);
+    background-size: 100% 20px, 20px 100%, 100px 100%; border-block: 1px solid var(--grid-strong); }
+  svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  path { fill: none; stroke: var(--signal); stroke-width: 1.6; vector-effect: non-scaling-stroke; stroke-linejoin: round;
+    stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.4s cubic-bezier(.4,0,.2,1) .2s forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (prefers-reduced-motion: reduce) { path { animation: none; stroke-dashoffset: 0; } }
+</style>

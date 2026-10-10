@@ -1,0 +1,33 @@
+---
+import { site } from '../data/site';
+const a = site.address;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <p class="name">{site.name}</p>
+      <address>
+        {a.street}<br />{a.city}, {a.region} {a.postalCode}<br />
+        <a href={`tel:${site.phone}`}>{site.phone}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+    </div>
+    <div>
+      <p class="name">Opening hours</p>
+      <dl>
+        {site.hours.map((h) => (<><dt>{h.days.length > 1 ? `${h.days[0]} to ${h.days.at(-1)}` : h.days[0]}</dt><dd>{h.opens} to {h.closes}</dd></>))}
+      </dl>
+    </div>
+    <p class="note">Demo project with a fictional clinic. Content is for illustration and is not medical advice.<br />© {year} {site.legalName}</p>
+  </div>
+</footer>
+<style>
+  .site-footer { margin-top: var(--s-6); border-top: 1px solid var(--grid-strong); padding-block: var(--s-5); font-size: var(--t-small); color: var(--muted); }
+  .cols { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+  .name { font-weight: 700; color: var(--ink); margin: 0 0 var(--s-1); }
+  address { font-style: normal; line-height: 1.7; }
+  dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .2rem var(--s-2); }
+  dd { margin: 0; }
+  .note { margin: 0; align-self: end; }
+</style>

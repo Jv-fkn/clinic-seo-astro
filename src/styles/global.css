@@ -1,0 +1,46 @@
+/* Tokens: a cool "EEG paper" palette. One signal colour, used for the trace, links and focus. */
+:root {
+  --paper: #F5F8F8;
+  --ink: #15262C;
+  --muted: #55666C;
+  --grid: #E3EBEB;
+  --grid-strong: #C7D5D5;
+  --signal: #2346B8;
+  --signal-ink: #fff;
+
+  --f-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-head: 'Newsreader', Georgia, 'Times New Roman', serif;
+
+  /* Modular scale, ratio 1.25 */
+  --t-small: .875rem; --t-base: 1.0625rem; --t-h3: 1.33rem; --t-h2: 1.66rem; --t-h1: clamp(2.1rem, 4.5vw, 3.25rem);
+  --s-1: .5rem; --s-2: .75rem; --s-3: 1rem; --s-4: 1.5rem; --s-5: 2.5rem; --s-6: 4rem;
+  --measure: 66ch;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 var(--t-base)/1.6 var(--f-body); }
+img, svg { max-width: 100%; }
+
+h1, h2, h3 { font-family: var(--f-head); font-weight: 500; line-height: 1.15; letter-spacing: -.01em; margin: 0 0 var(--s-3); text-wrap: balance; }
+h1 { font-size: var(--t-h1); }
+h2 { font-size: var(--t-h2); margin-top: var(--s-5); }
+h3 { font-size: var(--t-h3); }
+p, ul, ol { margin: 0 0 var(--s-3); }
+a { color: var(--signal); text-underline-offset: .18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; border-radius: 2px; }
+
+.wrap { width: min(100% - 2.5rem, 72rem); margin-inline: auto; }
+.prose { max-width: var(--measure); }
+.lede { font-size: 1.2rem; color: var(--muted); max-width: 52ch; }
+.section { padding-block: var(--s-5); }
+
+.btn { display: inline-block; background: var(--ink); color: var(--paper); padding: .8rem 1.3rem; border-radius: 4px; font-weight: 700; text-decoration: none; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.btn:hover { background: var(--signal); }
+.btn-quiet { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.btn-quiet:hover { background: var(--ink); color: var(--paper); }
+
+.skip { position: absolute; left: -999px; top: 0; background: var(--ink); color: var(--paper); padding: .5rem 1rem; z-index: 10; }
+.skip:focus { left: 1rem; }

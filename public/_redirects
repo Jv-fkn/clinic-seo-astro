@@ -1,0 +1,11 @@
+# Redirect plan: legacy static-HTML URLs -> new clean URLs (301 permanent).
+# Format works on Netlify and Cloudflare Pages. For Vercel, see docs/redirect-plan.md.
+/index.html                  /                          301
+/services.html               /services                  301
+/eeg-routine.html            /services/routine-eeg      301
+/eeg-sleep.html              /services/sleep-deprived-eeg 301
+/eeg-ambulatory.html         /services/ambulatory-eeg   301
+/knowledge-hub.html          /articles                  301
+/knowledge-hub/what-is-eeg.html  /articles/what-is-an-eeg 301
+/contact.html                /contact                   301
+/referral.html               /contact                   301

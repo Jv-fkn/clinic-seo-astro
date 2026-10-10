@@ -1,0 +1,28 @@
+---
+import { site, nav } from '../data/site';
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="brand" aria-label={`${site.name}, home`}>
+      <svg width="28" height="20" viewBox="0 0 28 20" aria-hidden="true"><path d="M1 10h6l2-7 4 14 3-9 2 2h9" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>{site.name}</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {nav.map((n) => (
+          <li><a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+<style>
+  .site-header { border-bottom: 1px solid var(--grid-strong); background: var(--paper); }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); padding-block: var(--s-3); }
+  .brand { display: inline-flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--ink); text-decoration: none; }
+  .brand svg { color: var(--signal); }
+  ul { list-style: none; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); margin: 0; padding: 0; }
+  nav a { color: var(--ink); text-decoration: none; padding-block: .25rem; border-bottom: 2px solid transparent; }
+  nav a:hover, nav a[aria-current='page'] { border-bottom-color: var(--signal); }
+</style>

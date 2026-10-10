@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbs } from '../lib/schema';
+import { services } from '../data/services';
+import { site } from '../data/site';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Book or refer', href: '/contact' }];
+// Replace with your form endpoint (Formspree, Netlify Forms, or your own Node.js API).
+const FORM_ACTION = import.meta.env.PUBLIC_FORM_ACTION ?? 'https://formspree.io/f/your-form-id';
+---
+<Base title="Book a test or refer a patient" description={`Book an EEG appointment or send a clinical referral to ${site.name} in Port Maris. Call ${site.phone} or use the online form.`} schema={[breadcrumbs(crumbs)]}>
+  <div class="wrap section grid">
+    <div>
+      <Breadcrumbs items={crumbs} />
+      <h1>Book a test or refer a patient</h1>
+      <p class="lede">We reply within one working day. For urgent referrals, call <a href={`tel:${site.phone}`}>{site.phone}</a>.</p>
+    </div>
+    <form method="post" action={FORM_ACTION}>
+      <fieldset>
+        <legend>I am</legend>
+        <label><input type="radio" name="sender" value="patient" checked /> A patient or family member</label>
+        <label><input type="radio" name="sender" value="clinician" /> A clinician making a referral</label>
+      </fieldset>
+      <label for="name">Full name</label>
+      <input id="name" name="name" autocomplete="name" required />
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" required />
+      <label for="phone">Phone</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" />
+      <label for="service">Test</label>
+      <select id="service" name="service">
+        <option value="">Not sure yet</option>
+        {services.map((s) => <option value={s.slug}>{s.name}</option>)}
+      </select>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="5"></textarea>
+      <p class="hint">Please do not include detailed medical history here. We will collect it securely at your appointment.</p>
+      <button class="btn" type="submit">Send request</button>
+    </form>
+  </div>
+</Base>
+<script is:inline>
+  // Preselect the test when arriving from a service page (?service=routine-eeg).
+  const s = new URLSearchParams(location.search).get('service');
+  const sel = document.getElementById('service');
+  if (s && sel && [...sel.options].some((o) => o.value === s)) sel.value = s;
+</script>
+<style>
+  .grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); align-items: start; }
+  form { display: grid; gap: var(--s-1); max-width: 32rem; }
+  label { font-weight: 700; margin-top: var(--s-2); }
+  fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-1); }
+  legend { font-weight: 700; margin-bottom: var(--s-1); }
+  fieldset label { font-weight: 400; margin: 0; display: flex; gap: .5rem; align-items: center; }
+  input:not([type='radio']), select, textarea { font: inherit; padding: .65rem .75rem; border: 1.5px solid var(--grid-strong); border-radius: 4px; background: #fff; color: var(--ink); width: 100%; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { border-color: var(--signal); }
+  .hint { font-size: var(--t-small); color: var(--muted); }
+  button { justify-self: start; margin-top: var(--s-2); }
+</style>

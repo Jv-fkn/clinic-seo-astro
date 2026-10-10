@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Trace from '../components/Trace.astro';
+import { getCollection } from 'astro:content';
+import { services } from '../data/services';
+import { site } from '../data/site';
+
+const articles = (await getCollection('articles')).sort((a, b) => +b.data.published - +a.data.published).slice(0, 3);
+---
+<Base title="Home" description={site.description}>
+  <section class="hero">
+    <div class="wrap">
+      <h1>EEG testing explained before, during and after your visit.</h1>
+      <p class="lede">Outpatient neurodiagnostic testing in Port Maris, with reports your doctor can act on and a free library that answers the questions patients actually ask.</p>
+      <p class="actions">
+        <a class="btn" href="/contact">Book or refer a patient</a>
+        <a class="btn btn-quiet" href="/articles/what-is-an-eeg">What is an EEG?</a>
+      </p>
+    </div>
+    <Trace label="Illustrative EEG trace showing a regular rhythm with one spike-and-wave pattern" />
+  </section>
+
+  <section class="section wrap">
+    <h2>Tests we offer</h2>
+    <ul class="services">
+      {services.map((s) => (
+        <li>
+          <h3><a href={`/services/${s.slug}`}>{s.name}</a></h3>
+          <p>{s.summary}</p>
+          <p class="meta">{s.duration}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section wrap">
+    <h2>From the knowledge hub</h2>
+    <ul class="articles">
+      {articles.map((a) => (
+        <li>
+          <a href={`/articles/${a.id}`}>{a.data.title}</a>
+          <span>{a.data.readingMinutes} min read</span>
+        </li>
+      ))}
+    </ul>
+    <p><a href="/articles">All articles</a></p>
+  </section>
+</Base>
+<style>
+  .hero { padding-top: var(--s-6); }
+  .hero h1 { max-width: 18ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-4) 0 var(--s-5); }
+  .services { list-style: none; padding: 0; display: grid; gap: 0 var(--s-5); grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+  .services li { border-top: 2px solid var(--ink); padding-top: var(--s-3); }
+  .services h3 a { color: var(--ink); text-decoration: none; }
+  .services h3 a:hover { color: var(--signal); }
+  .meta { font-size: var(--t-small); color: var(--muted); }
+  .articles { list-style: none; padding: 0; max-width: var(--measure); }
+  .articles li { display: flex; justify-content: space-between; gap: var(--s-3); padding-block: var(--s-2); border-bottom: 1px solid var(--grid-strong); }
+  .articles span { color: var(--muted); font-size: var(--t-small); white-space: nowrap; }
+</style>

@@ -1,0 +1,20 @@
+{
+  "name": "clinic-seo-astro",
+  "version": "1.0.0",
+  "description": "SEO-first healthcare website starter built with Astro: metadata framework, JSON-LD schema, sitemap, breadcrumbs and redirect plan.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.3.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

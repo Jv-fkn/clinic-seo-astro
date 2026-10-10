@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { services, type Service } from '../../data/services';
+import { breadcrumbs, service as serviceSchema } from '../../lib/schema';
+import { getCollection } from 'astro:content';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { s } }));
+}
+
+const { s } = Astro.props as { s: Service };
+const related = (await getCollection('articles')).filter((a) => s.related.includes(a.id));
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services' }, { name: s.name, href: `/services/${s.slug}` }];
+---
+<Base title={s.name} description={s.summary} schema={[breadcrumbs(crumbs), serviceSchema(s)]}>
+  <article class="wrap section prose">
+    <Breadcrumbs items={crumbs} />
+    <h1>{s.name}</h1>
+    <p class="lede">{s.summary}</p>
+    <p><strong>Time needed:</strong> {s.duration}</p>
+    {s.body.map((p) => <p>{p}</p>)}
+    <h2>How to prepare</h2>
+    <ul>{s.preparation.map((p) => <li>{p}</li>)}</ul>
+    {related.length > 0 && (
+      <>
+        <h2>Related reading</h2>
+        <ul>{related.map((a) => <li><a href={`/articles/${a.id}`}>{a.data.title}</a></li>)}</ul>
+      </>
+    )}
+    <p><a class="btn" href={`/contact?service=${s.slug}`}>Book a {s.name.toLowerCase()}</a></p>
+  </article>
+</Base>

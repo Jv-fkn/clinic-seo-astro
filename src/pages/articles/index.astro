@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection } from 'astro:content';
+import { breadcrumbs } from '../../lib/schema';
+
+const articles = (await getCollection('articles')).sort((a, b) => +b.data.published - +a.data.published);
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Learn about EEG', href: '/articles' }];
+const fmt = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
+---
+<Base title="Learn about EEG" description="Plain-language guides to EEG testing: what it measures, how to prepare, and how to read your report. Written for patients, families and clinicians." schema={[breadcrumbs(crumbs)]}>
+  <div class="wrap section">
+    <Breadcrumbs items={crumbs} />
+    <h1>Learn about EEG</h1>
+    <p class="lede">Short, plain-language guides reviewed by our clinical team.</p>
+    <ol class="list">
+      {articles.map((a) => (
+        <li>
+          <h2><a href={`/articles/${a.id}`}>{a.data.title}</a></h2>
+          <p>{a.data.description}</p>
+          <p class="meta"><time datetime={a.data.published.toISOString()}>{fmt.format(a.data.published)}</time>, {a.data.readingMinutes} min read</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</Base>
+<style>
+  .list { list-style: none; padding: 0; max-width: var(--measure); }
+  .list li { border-top: 1px solid var(--grid-strong); padding-top: var(--s-2); margin-top: var(--s-4); }
+  .list h2 { margin-top: 0; font-size: var(--t-h3); }
+  .list h2 a { color: var(--ink); }
+  .meta { color: var(--muted); font-size: var(--t-small); }
+</style>

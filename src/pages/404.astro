@@ -1,0 +1,11 @@
+---
+import Base from '../layouts/Base.astro';
+import Trace from '../components/Trace.astro';
+---
+<Base title="Page not found" description="The page you were looking for has moved or no longer exists." noindex>
+  <div class="wrap section prose">
+    <h1>This page has moved or no longer exists</h1>
+    <p>Try the <a href="/services">list of tests</a>, the <a href="/articles">EEG guides</a>, or go back to the <a href="/">home page</a>.</p>
+  </div>
+  <Trace seed={11} height={80} />
+</Base>

@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { services } from '../../data/services';
+import { breadcrumbs } from '../../lib/schema';
+
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services' }];
+---
+<Base title="EEG and neurodiagnostic services" description="Routine, sleep-deprived and ambulatory EEG testing in Port Maris. What each test involves, how long it takes and how to prepare." schema={[breadcrumbs(crumbs)]}>
+  <div class="wrap section">
+    <Breadcrumbs items={crumbs} />
+    <h1>Services</h1>
+    <p class="lede">Every test is reviewed by a neurologist and reported to your referring doctor.</p>
+    {services.map((s) => (
+      <article class="row">
+        <h2><a href={`/services/${s.slug}`}>{s.name}</a></h2>
+        <p>{s.summary}</p>
+        <p class="meta">Time needed: {s.duration}</p>
+      </article>
+    ))}
+  </div>
+</Base>
+<style>
+  .row { max-width: var(--measure); border-top: 1px solid var(--grid-strong); padding-top: var(--s-2); margin-top: var(--s-4); }
+  .row h2 { margin-top: 0; }
+  .row h2 a { color: var(--ink); }
+  .meta { color: var(--muted); font-size: var(--t-small); }
+</style>

@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { breadcrumbs, article as articleSchema, faq as faqSchema } from '../../lib/schema';
+import { services } from '../../data/services';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'articles'> };
+const { Content } = await render(entry);
+const d = entry.data;
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Learn about EEG', href: '/articles' }, { name: d.title, href: `/articles/${entry.id}` }];
+const schema = [breadcrumbs(crumbs), articleSchema({ ...d, slug: entry.id })];
+if (d.faq?.length) schema.push(faqSchema(d.faq));
+
+// Internal linking: services that list this article as related reading
+const relatedServices = services.filter((s) => s.related.includes(entry.id));
+const fmt = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' });
+---
+<Base title={d.title} description={d.description} type="article" published={d.published} updated={d.updated} schema={schema}>
+  <article class="wrap section prose">
+    <Breadcrumbs items={crumbs} />
+    <h1>{d.title}</h1>
+    <p class="meta">
+      By {d.author}. Published <time datetime={d.published.toISOString()}>{fmt.format(d.published)}</time>
+      {d.updated && <>, updated <time datetime={d.updated.toISOString()}>{fmt.format(d.updated)}</time></>}.
+    </p>
+    <Content />
+    {d.faq && (
+      <section aria-labelledby="faq">
+        <h2 id="faq">Common questions</h2>
+        {d.faq.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </section>
+    )}
+    {relatedServices.length > 0 && (
+      <aside class="related">
+        <h2>Tests mentioned in this guide</h2>
+        <ul>{relatedServices.map((s) => <li><a href={`/services/${s.slug}`}>{s.name}</a>: {s.summary}</li>)}</ul>
+      </aside>
+    )}
+  </article>
+</Base>
+<style>
+  .meta { color: var(--muted); font-size: var(--t-small); margin-bottom: var(--s-4); }
+  details { border-top: 1px solid var(--grid-strong); padding-block: var(--s-2); }
+  details:last-of-type { border-bottom: 1px solid var(--grid-strong); }
+  summary { cursor: pointer; font-weight: 700; }
+  details p { margin: var(--s-1) 0 0; }
+  .related { margin-top: var(--s-5); border-left: 3px solid var(--signal); padding-left: var(--s-3); }
+  .related h2 { margin-top: 0; font-size: var(--t-h3); }
+</style>
